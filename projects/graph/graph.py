@@ -46,7 +46,7 @@ class Graph:
             vert = q.dequeue()
             if vert not in visited:
                 visited.add(vert)
-                print()
+                print(vert)
                 for neighbor in self.get_neighbors(vert):
                     q.enqueue(neighbor)
 
