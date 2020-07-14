@@ -150,7 +150,7 @@ class Graph:
                     tempPath.append(neighbor)
                     s.push(tempPath)
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, path, visited=set()):
+    def dfs_recursive(self, starting_vertex, destination_vertex, path=[], visited=set()):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -173,8 +173,8 @@ class Graph:
                 # COPY THE PATH
                 tempPath = list(path)
                 # APPEND THE NEIGHOR TO THE BACK
-                path= tempPath.append(neighbor)
-            starting_vertex = path[len(path)-1]
+                tempPath.append(neighbor)
+            starting_vertex = tempPath[len(tempPath)-1]
             return self.dfs_recursive(starting_vertex, destination_vertex, path, visited)
 
 
