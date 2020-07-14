@@ -100,7 +100,7 @@ class Graph:
             # Dequeue the first PATH
             path = q.dequeue()
             # Grab the last vertex from the PATH
-            lastVert = path[len(path)-1]
+            lastVert = path[-1]
             # If that vertex has not been visited...
             if lastVert not in visited:
                 # CHECK IF IT'S THE TARGET
@@ -133,7 +133,7 @@ class Graph:
             # Dequeue the first PATH
             path = s.pop()
             # Grab the last vertex from the PATH
-            lastVert = path[len(path)-1]
+            lastVert = path[-1]
             # If that vertex has not been visited...
             if lastVert not in visited:
                 # CHECK IF IT'S THE TARGET
@@ -174,7 +174,7 @@ class Graph:
                 tempPath = list(path)
                 # APPEND THE NEIGHOR TO THE BACK
                 tempPath.append(neighbor)
-            starting_vertex = tempPath[len(tempPath)-1]
+            starting_vertex = tempPath[-1]
             return self.dfs_recursive(starting_vertex, destination_vertex, path, visited)
 
 
