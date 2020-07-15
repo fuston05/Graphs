@@ -16,14 +16,12 @@ class Stack():
 
 def earliest_ancestor(ancestors, starting_node):
     parentsToVisit = Stack()
-
     parentsToVisit.push(starting_node)
-
     visited = set()
 
     # parents used below ot track 
     # current parents for each iteration
-    parents= set()
+    parents= None
 
     while parentsToVisit.size() > 0:
         cur = parentsToVisit.pop()
@@ -41,10 +39,8 @@ def earliest_ancestor(ancestors, starting_node):
                     parents.add(g)
                     parentsToVisit.push(g)
 
-    if len(parents) > 0:
-        return min(parents)
-    else:
-        return -1
+    return min(parents) if parents else -1
+
 
 def get_parents(child, ancestors):
     # go through ancestor data list
