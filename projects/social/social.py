@@ -17,7 +17,6 @@ class Queue():
     def size(self):
         return len(self.queue)
 
-
 class User:
     def __init__(self, name):
         self.name = name
@@ -86,7 +85,7 @@ class SocialGraph:
 
     def bft(self, user_id):
         q = Queue()
-        visited = list()
+        visited = set()
         # initial state
         q.enqueue(user_id)
 
@@ -94,7 +93,7 @@ class SocialGraph:
             curUser = q.dequeue()
 
             if curUser not in visited:
-                visited.append(curUser)
+                visited.add(curUser)
                 # get curUser's friends
                 curFriends = self.friendships[curUser]
                 for friend in curFriends:
@@ -146,32 +145,40 @@ class SocialGraph:
         # build a list of in-network friends in 'added'
         # bft returns a list of ALL user_id's friends
         added = self.bft(user_id)
-        separationDegree= list()
+
+        # separationDegree = list()
+
         for user in added:
             # path to each 'user' from starting user_id
-            path= self.bfs(user_id, user)
-            if user not in visited: 
-                separationDegree.append(len(path))
-                visited[user]= path
-        tempSum= 0
-        for d in separationDegree:
-            tempSum+= d
-        aveSeparation= tempSum//len(separationDegree)
+            path = self.bfs(user_id, user)
+            if user not in visited:
+                # separationDegree.append(len(path))
+                visited[user] = path
 
-        print('degrees of separation: ', aveSeparation)
+        # calculate the average degree of separation
+        # tempSum = 0
+        # for d in separationDegree:
+        #     tempSum += d
+        # aveSeparation = tempSum//len(separationDegree)
+
+        # test print for average degree of separation
+        # print('degrees of separation: ', aveSeparation)
+        # print('')
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(1000, 5)
+    sg.populate_graph(1000, 10)
     print('sg.friendships: ', sg.friendships)
     print('')
     connections = sg.get_all_social_paths(1)
-    print('Connections:', connections)
+    # print('Connections:', connections)
     print('')
-    print('total users: ', len(sg.users))
-    print('')
+    # print('total users: ', len(sg.users))
+    # print('')
     print('# of Connections: ', len(connections))
-    print('')
-    print('connections %: ', len(connections)/len(sg.users))
+    # print('')
+    # calculate the % of other users that will -
+    # be in a given user's extended network
+    # print('connections %: ', len(connections)/len(sg.users))
