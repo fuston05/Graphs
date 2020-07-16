@@ -146,20 +146,32 @@ class SocialGraph:
         # build a list of in-network friends in 'added'
         # bft returns a list of ALL user_id's friends
         added = self.bft(user_id)
-
+        separationDegree= list()
         for user in added:
             # path to each 'user' from starting user_id
             path= self.bfs(user_id, user)
             if user not in visited: 
+                separationDegree.append(len(path))
                 visited[user]= path
+        tempSum= 0
+        for d in separationDegree:
+            tempSum+= d
+        aveSeparation= tempSum//len(separationDegree)
 
+        print('degrees of separation: ', aveSeparation)
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
     print('sg.friendships: ', sg.friendships)
     print('')
     connections = sg.get_all_social_paths(1)
-    print(connections)
+    print('Connections:', connections)
+    print('')
+    print('total users: ', len(sg.users))
+    print('')
+    print('# of Connections: ', len(connections))
+    print('')
+    print('connections %: ', len(connections)/len(sg.users))
