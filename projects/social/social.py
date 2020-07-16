@@ -92,16 +92,14 @@ class SocialGraph:
 
         while q.size() > 0:
             curUser = q.dequeue()
-            # print('curUser: ', curUser)
 
             if curUser not in visited:
                 visited.append(curUser)
+                # get curUser's friends
                 curFriends = self.friendships[curUser]
-                # print('friends: ', curFriends)
                 for friend in curFriends:
                     q.enqueue(friend)
 
-        # print('visited: ', visited)
         return visited
 
     def bfs(self, user_id, target):
@@ -122,9 +120,9 @@ class SocialGraph:
                     # IF SO, RETURN PATH
                     return path
 
-                # Mark it as visited...
+                # Mark as visited...
                 visited.add(lastFriend)
-                # Then add A PATH TO its neighbors to the back of the queue
+                # Then add A PATH TO its friends to the back of the queue
                 for friend in self.friendships[lastFriend]:
                     # COPY THE PATH
                     tempPath = list(path)
@@ -144,21 +142,24 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
-        # build a list of in network friends in 'added'
+
+        # build a list of in-network friends in 'added'
+        # bft returns a list of ALL user_id's friends
         added = self.bft(user_id)
-        print('added: ', added)
+
         for user in added:
+            # path to each 'user' from starting user_id
             path= self.bfs(user_id, user)
             if user not in visited: 
                 visited[user]= path
 
-        print('visited: ', visited)
-        # return visited
+        return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
     print('sg.friendships: ', sg.friendships)
+    print('')
     connections = sg.get_all_social_paths(1)
     print(connections)
