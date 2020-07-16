@@ -40,8 +40,13 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+traversal_graph= {}
 
-# bfs **
+# generate traversal graph of '?''s for unexplored rooms
+for i in range(len(room_graph)):
+    traversal_graph[i]= {'n': '?', 's': '?', 'w': '?', 'e': '?'}
+
+
 q= Queue()
 q.enqueue(player.current_room)
 
@@ -53,7 +58,6 @@ while q.size() > 0:
     exits= player.current_room.get_exits()
     print('current exits: ', exits)
     
-
     for ex in exits:
         if ex not in traversal_path:
             # move player
@@ -80,7 +84,8 @@ def randomDir():
 
 
 print('traversal_path', traversal_path)
-print('randomDir: ', randomDir())
+# print('randomDir: ', randomDir())
+# print('# of rooms: ', len(room_graph))
 # print('room id: ', player.current_room.id)
 # print('room name: ', player.current_room.name)
 # print('current room: ', player.current_room)
