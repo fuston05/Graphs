@@ -10,9 +10,9 @@ world = World()
 
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
-map_file = "maps/test_cross.txt"
+# map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-# map_file = "maps/test_loop_fork.txt"
+map_file = "maps/test_loop_fork.txt"
 # map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
@@ -47,14 +47,19 @@ def randomDir(camefrom, exits):
 def chooseDir(cameFrom):
     possibleDirs= player.current_room.get_exits()
     for dir in possibleDirs:
+        if backTracking == True:
+            if cameFrom != dir:
+                return dir
         if traversal_graph[curRoom.id][dir] == '?':
             # check if it's the way we came or not
             # cameFrom is a list of directions we've been from curRoom
             if cameFrom != dir:
                 return dir
+
     return False
 
-def getDirectionOpposite(dir):
+def getDirectionOpposite(dir, backTracking):
+    backTracking= True
     if dir == 'n':
         opposite = 's'
     elif dir == 's':
@@ -89,17 +94,18 @@ backTracking= False
 
 # players starting current room object
 curRoom = player.current_room
+print('starting room: ', curRoom.id)
 prevRoom= curRoom
-print('curRoom: ', curRoom)
 # current room exits list
 curExits = curRoom.get_exits()
 
 # track most recent dir we came from: 'n', 's', etc
 cameFrom= None
-count= 20
-# while len(visited) != len(room_graph):
+count= 40
+while len(visited) != len(room_graph):
 # temporary loop counter during testing to avoid the inf loop
-while count > 0:
+# while count > 0:
+    print('backtracking: ', backTracking)
     # current room exits list
     curExits = curRoom.get_exits()
 
@@ -110,29 +116,37 @@ while count > 0:
     if direction == False:
         # then we're at a dead end
         print('dead-end, Time to turn around')
+        direction= getDirectionOpposite(traversal_path[-1], backTracking)
         backTracking= True
-        direction= getDirectionOpposite(traversal_path[-1])
 
     # is there a room in that direction?
     if player.current_room.get_room_in_direction(direction):
 
         # current 'came from' dir: 'n', 's', etc
-        cameFrom= (getDirectionOpposite(direction))
+        cameFrom= (getDirectionOpposite(direction, backTracking))
         # track prev room so we can update traversal_graph
         prevRoom= player.current_room
-        print('prevRoom: ', prevRoom.id)
 
-        if traversal_graph[curRoom.id][direction] == '?':
-            player.travel(direction, show_rooms=True)
-            curRoom= player.current_room
-            traversal_graph[prevRoom.id][direction]= curRoom.id
-            print('current room: ', curRoom.id)
+
+        # update graph to track where we've explored
+        # travel to room
+        player.travel(direction, show_rooms=True)
+        curRoom= player.current_room
+
+        if traversal_graph[prevRoom.id][direction] == '?':
+            # if we find a NEW room, we're no longer backtracking
+            backTracking= False
+            traversal_graph[prevRoom.id][direction]= player.current_room.id
+            # track visited to control the loop
+            visited.add(curRoom.id)
 
         # update our tracking vars for each move
         traversal_path.append(direction)
     else:
         print('no room in that direction')
     # used for temporary loop counter for testing to avoid the inf loop
+    print('prevRoom: ', prevRoom.id)
+    print('new current room: ', curRoom.id)
     count-= 1
 
 
@@ -144,6 +158,10 @@ print('')
 print('visited: ', visited)
 print('')
 print('traversal_graph: ', traversal_graph)
+print('')
+print('traversal_graph len: ', len(traversal_graph))
+print('')
+print('room graph len: ', len(room_graph))
 
 
 # OLD CODE ***********************************
