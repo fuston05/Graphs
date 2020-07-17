@@ -21,6 +21,19 @@ class Queue():
     def size(self):
         return len(self.queue)
 
+def randomDir(curExits):
+    randomDir= random.randrange(0, curExits)
+    if randomDir == 0:
+        direction= 'n'
+    elif randomDir == 1:
+        direction= 's'
+    elif randomDir == 2:
+        direction= 'e'
+    elif randomDir == 3:
+        direction= 'w'
+    print('rand dir: ', direction)
+    return direction
+
 # You may uncomment the smaller graphs for development and testing purposes.
 map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
@@ -42,47 +55,47 @@ player = Player(world.starting_room)
 traversal_path = []
 traversal_graph= {}
 
-# generate traversal graph of '?''s for unexplored rooms
+# generate a parallell of the room graph, for -
+# traversal of unexplored rooms that have a '?'
+# populate this as we go
 for i in range(len(room_graph)):
     traversal_graph[i]= {'n': '?', 's': '?', 'w': '?', 'e': '?'}
 
-
 q= Queue()
-q.enqueue(player.current_room)
+q.enqueue(player.current_room.id)
 
 while q.size() > 0:
     curRoom= q.dequeue()
-    # print('curRoom: ', curRoom)
+    prevRoom= curRoom
+    print('curRoom id: ', curRoom)
 
     # get exits
     exits= player.current_room.get_exits()
     print('current exits: ', exits)
-    
-    for ex in exits:
-        if ex not in traversal_path:
-            # move player
-            player.travel(ex)
-            # add to traversal path
-            traversal_path.append(ex)
-            # add to Q
-            q.enqueue(ex)
-            print('exs: ', ex)
+    if exits:
+        # if rand direction exists in current room's exits
+        direction= randomDir(len(exits))
+        print('dir: ', direction)
+    #else: if there are no exits: dead-end
+    # walk back
+    # if no exits
+    else: 
+        print('This room is a dead-end')
+
+    if traversal_graph[prevRoom][direction] == '?':
+        # move to new room in new 'direction
+        player.travel(direction, show_rooms= True)
+        # pick an exit, and GO there.. IF it has a '?' as a value for that dir
+        q.enqueue(player.current_room.id)
+        print('new room: ', player.current_room.id)
+        # log this room into path and graph
+        traversal_path.append(direction)
+        traversal_graph[prevRoom][direction]= player.current_room.id
+        
 
 
-def randomDir():
-    randomDir= random.randrange(1, 5)
-    print('rand dir: ', randomDir)
-    if randomDir == 1:
-        direction= 'N'
-    elif randomDir == 2:
-        direction= 'S'
-    elif randomDir == 3:
-        direction= 'E'
-    elif randomDir == 4:
-        direction= 'W'
-    return direction
 
-
+print('traversal graph: ', traversal_graph)
 print('traversal_path', traversal_path)
 # print('randomDir: ', randomDir())
 # print('# of rooms: ', len(room_graph))
