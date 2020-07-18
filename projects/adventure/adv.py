@@ -12,8 +12,8 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+# map_file = "maps/test_loop_fork.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph = literal_eval(open(map_file, "r").read())
@@ -29,8 +29,8 @@ player = Player(world.starting_room)
 
 # ************** functions ***************
 # not currently using randomDir ******
-def randomDir(camefrom, exits):
-    randomDir = random.randrange(0, exits)  # exclusive
+def randomDir(camefrom):
+    randomDir = random.randrange(0, 4)  # exclusive
     if randomDir == 0:
         direction = 'n'
     elif randomDir == 1:
@@ -42,14 +42,14 @@ def randomDir(camefrom, exits):
     if cameFrom != direction:
         print('rand dir: ', direction)
         return direction
-    return randomDir(cameFrom, exits)
+    return direction
 
 def chooseDir(cameFrom):
     possibleDirs= player.current_room.get_exits()
     for dir in possibleDirs:
         if backTracking == True:
             if cameFrom != dir:
-                return dir
+                return randomDir(cameFrom)
         if traversal_graph[curRoom.id][dir] == '?':
             # check if it's the way we came or not
             # cameFrom is a list of directions we've been from curRoom
