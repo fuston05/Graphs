@@ -36,12 +36,19 @@ class Graph:
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        q= Queue
+        q= Queue()
         q.enqueue(starting_vertex)
+        visited= set()
 
-        while len(q):
+        while q.size() > 0:
             cur= q.dequeue()
-        
+
+            if cur not in visited:
+                print(cur)
+                for neighbor in self.get_neighbors(cur):
+                    q.enqueue(neighbor)
+            
+            visited.add(cur)
 
 
     def dft(self, starting_vertex):
@@ -128,7 +135,7 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
-    # graph.bft(1)
+    graph.bft(1)
 
     '''
     Valid DFT paths:
