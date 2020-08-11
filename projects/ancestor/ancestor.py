@@ -16,16 +16,38 @@ class Stack():
 
 
 def earliest_ancestor(ancestors, starting_node):
-    pass
+    s= Stack()
+    visited= set()
+    parents= []
 
+    s.push(starting_node)
+    while s.size() > 0:
+        curNode= s.pop()
+        if curNode not in visited:
+            visited.add(curNode) 
+            tempParents= get_parents(curNode, ancestors)
+            if tempParents:
+                parents= tempParents
+                for p in parents:
+                    s.push(p)
+    if len(parents) == 0:
+        return -1
+    return min(parents)
 
 def get_parents(child, ancestors):
-    pass
+    parents= []
+    # 1st int is parent, second is child
+    # loop over ancestors at 0 index 
+    for a in ancestors:
+    # check to see if its child == child
+        if a[1] == child:
+            parents.append(a[0])
+    # return all parents
+    return parents
 
 
 if __name__ == "__main__":
-    test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7),
-                      (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
+    test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
 
     # print(earliest_ancestor(test_ancestors, 1))  # 10
     # print('')
