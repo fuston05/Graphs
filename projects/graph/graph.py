@@ -87,22 +87,21 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        q= Queue()
-        visited= []
+        q = Queue()
+        visited = []
         q.enqueue([starting_vertex])
         while q.size() > 0:
-            curPath= q.dequeue()
-            curNode= curPath[-1]
+            curPath = q.dequeue()
+            curNode = curPath[-1]
             print('bfs curNode; ', curNode)
             if curNode is destination_vertex:
                 return curPath
             if curNode not in visited:
                 visited.append(curNode)
                 for neighbor in self.get_neighbors(curNode):
-                    tempPath= curPath.copy()
+                    tempPath = curPath.copy()
                     tempPath.append(neighbor)
                     q.enqueue(tempPath)
-
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -130,14 +129,30 @@ class Graph:
             else:
                 return curPath
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, path=[], visited=set()):
-        """
-        Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
+    def dfs_recursive(self, starting_vertex, destination_vertex, path=[], visited= set()):
 
-        This should be done using recursion.
-        """
+        # Return a list containing a path from
+        # starting_vertex to destination_vertex in
+        # depth-first order.
+
+        # This should be done using recursion.
+        if len(path) == 0:
+            path= [starting_vertex]
+
+        if starting_vertex is destination_vertex:
+            return path
+
+        if starting_vertex not in visited:
+            visited.add(starting_vertex)
+
+            for neighbor in self.get_neighbors(starting_vertex):
+                curPath= path.copy()
+                curPath.append(neighbor)
+                the_path = self.dfs_recursive(
+                    neighbor, destination_vertex, curPath, visited)
+
+            if the_path:
+                return the_path
 
 
 if __name__ == '__main__':
