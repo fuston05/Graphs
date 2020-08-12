@@ -14,51 +14,42 @@ class Stack():
     def size(self):
         return len(self.stack)
 
+
 def earliest_ancestor(ancestors, starting_node):
-    parentsToVisit = Stack()
-    parentsToVisit.push(starting_node)
+    s = Stack()
     visited = set()
+    parents = []
 
-    # parents used below ot track 
-    # current parents for each iteration
-    parents= None
-
-    while parentsToVisit.size() > 0:
-        cur = parentsToVisit.pop()
-
-        if cur not in visited:
-            # store 'visited'
-            visited.add(cur)
-
-            # get cur's parents
-            for g in get_parents(cur, ancestors):
-                if g: #if parent was returned from get_parents
-                    # reset the parents list
-                    parents= set()
-                    # add parents
-                    parents.add(g)
-                    parentsToVisit.push(g)
-
-    return min(parents) if parents else -1
+    s.push(starting_node)
+    while s.size() > 0:
+        curNode = s.pop()
+        if curNode not in visited:
+            visited.add(curNode)
+            tempParents = get_parents(curNode, ancestors)
+            if tempParents:
+                parents = tempParents
+                for p in parents:
+                    s.push(p)
+    if len(parents) == 0:
+        return -1
+    return min(parents)
 
 
 def get_parents(child, ancestors):
-    # go through ancestor data list
-    parents = set()
-    for ancestor in ancestors:
-        # parent
-        par = ancestor[0]
-        # child
-        ch = ancestor[1]
-        if ch == child:
-            # add the parent from that pair as one of 'child's' parents
-            parents.add(par)
+    parents = []
+    # 1st int is parent, second is child
+    # loop over ancestors at 0 index
+    for a in ancestors:
+        # check to see if its child == child
+        if a[1] == child:
+            parents.append(a[0])
+    # return all parents
     return parents
 
 
-
 if __name__ == "__main__":
-    test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
+    test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7),
+                      (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
 
     # print(earliest_ancestor(test_ancestors, 1))  # 10
     # print('')
