@@ -1,5 +1,5 @@
 import random
-
+import sys
 
 class Queue():
     def __init__(self):
@@ -16,6 +16,7 @@ class Queue():
 
     def size(self):
         return len(self.queue)
+
 
 class User:
     def __init__(self, name):
@@ -48,30 +49,44 @@ class SocialGraph:
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
 
+    def reset(self):
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
+
     def populate_graph(self, num_users, avg_friendships):
         """
         Takes a number of users and an average number of friendships
         as arguments
+
         Creates that number of users and a randomly distributed friendships
         between those users.
+
         The number of users must be greater than the average number of friendships.
         """
         # Reset graph
-        self.last_id = 0
-        self.users = {}
-        self.friendships = {}
-        # !!!! IMPLEMENT ME
+        self.reset()
 
         # Add users
         for i in range(num_users):
-            user= f'User_{i}'
-            self.add_user(User)
-            print(f'added User_{i}')
+            self.add_user(f"User {i}")
 
         # Create friendships
-        # add_friendship(self, user_id, friend_id)
-        
+        possible_friendships = []
 
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+        random.shuffle(possible_friendships)
+
+        for i in range(num_users * avg_friendships // 2):
+            friendships = possible_friendships[i]
+            self.add_friendship(friendships[0], friendships[1])
+
+    def get_friends(self, user_id):
+        friends= self.friendships[user_id]
+        return friends
 
     def get_all_social_paths(self, user_id):
         """
@@ -82,21 +97,39 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        q= Queue()
+        q.enqueue([user_id])
+        sepDegrees= []
+
+        while q.size() > 0:
+            curPath= q.dequeue()
+            curUser= curPath[-1]
+
+            if curUser not in visited:
+                visited[curUser]= curPath
+
+                for friend in self.get_friends(curUser):
+                    tempPath= curPath.copy()
+                    tempPath.append(friend)
+                    sepDegrees.append(len(tempPath))
+                    q.enqueue(tempPath)
+        print('\n********\naverage degrees of separeation: ', round(sum(sepDegrees) / len(sepDegrees), 2), '\n********\n')
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(25, 2)
+    sg.populate_graph(20, 2)
     print('sg.friendships: ', sg.friendships)
     print('')
     connections = sg.get_all_social_paths(1)
-    # print('Connections:', connections)
+    print('Connections:', connections)
     print('')
-    # print('total users: ', len(sg.users))
-    # print('')
+    print('total users: ', len(sg.users))
+    print('')
     print('# of Connections: ', len(connections))
-    # print('')
+    print('')
     # calculate the % of other users that will -
     # be in a given user's extended network
-    # print('connections %: ', len(connections)/len(sg.users))
+    print('connections %: ', len(connections)/len(sg.users))
