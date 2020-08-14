@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/Scott-MacBook/.local/share/virtualenvs/Graphs-fYQvHaC2/bin/python",
+    "python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.8/bin/python3",
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": false,
